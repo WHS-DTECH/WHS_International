@@ -4,6 +4,3 @@ services:
     runtime: static
     buildCommand: ""
     staticPublishPath: .
-    envVars:
-      - key: DATABASE_URL
-        sync: false
