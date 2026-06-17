@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Settings | International Student App</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+          tailwind.config = {
+            darkMode: "class",
+            theme: {
+              extend: {
+                "colors": {
+                    "primary": "#003527", 
+                    "primary-container": "#064e3b", 
+                    "on-surface": "#191c1e",
+                    "on-surface-variant": "#404944", 
+                    "outline-variant": "#bfc9c3"
+                },
+                "fontFamily": { 
+                    "body-md": ["Inter"], 
+                    "headline-md": ["Montserrat"] 
+                }
+              }
+            }
+          }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { display: none; }
+    </style>
+</head>
+<body class="bg-[#f7f9fb] text-on-surface font-body-md min-h-screen flex flex-col">
+
+<header class="w-full flex justify-between items-center px-4 md:px-16 py-4 bg-white border-b border-outline-variant sticky top-0 z-50 gap-2">
+    <div class="flex items-center gap-4 min-w-0">
+        <span class="font-headline-md text-lg md:text-xl font-bold text-primary truncate">International Student App</span>
+    </div>
+    
+    <div class="flex items-center gap-3 md:gap-6 flex-shrink-0">
+        <a href="index.html" class="text-xs md:text-sm font-medium text-on-surface-variant hover:text-primary flex items-center gap-1 transition-colors min-h-[32px]">
+            <span class="material-symbols-outlined text-base">arrow_back</span>
+            <span class="hidden sm:inline" data-translate="back_to_dashboard">Back to Dashboard</span>
+        </a>
+        <div id="currentLanguageLabel" class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-on-surface-variant bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg">
+            --
+        </div>
+        <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary text-2xl" style="font-variation-settings: 'FILL' 1">account_circle</span>
+    </div>
+</header>
+
+<main class="flex-1 max-w-4xl w-full mx-auto px-4 md:px-6 py-6 md:py-12">
+    <h1 class="font-headline-md text-2xl md:text-3xl font-bold text-primary mb-6 md:mb-8 tracking-tight" data-translate="page_title">Settings</h1>
+
+    <div class="bg-white border border-outline-variant/60 rounded-xl p-5 md:p-8 max-w-3xl flex flex-col md:flex-row md:items-center md:justify-between gap-6 shadow-sm">
+        <div class="space-y-1.5 min-w-0">
+            <span class="block text-[11px] font-bold text-on-surface-variant tracking-wide uppercase" data-translate="card_label">Preference</span>
+            <h3 class="text-base md:text-lg font-bold text-on-surface" data-translate="card_title">Change Language</h3>
+            <p class="text-xs md:text-sm text-on-surface-variant max-w-md leading-relaxed break-words" data-translate="card_desc">
+                Select your preferred language. (It will take a moment for the change to apply on first load. The translations are done by a Program and might not be correct.)
+            </p>
+        </div>
+
+        <div class="relative inline-block w-full md:w-auto flex-shrink-0">
+            <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-white z-10">
+                <span class="material-symbols-outlined text-lg">g_translate</span>
+            </div>
+            <select id="languageSwitcher" class="w-full md:w-auto block appearance-none bg-primary hover:bg-primary-container text-white pl-10 pr-10 py-3 md:py-2.5 rounded-lg border-none text-sm font-medium cursor-pointer transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-primary h-11 md:h-auto touch-manipulation">
+                <option value="en" class="bg-white text-on-surface">English</option>
+                <option value="de" class="bg-white text-on-surface">Deutsch (German)</option>
+                <option value="es" class="bg-white text-on-surface">Español (Spanish)</option>
+                <option value="fr" class="bg-white text-on-surface">Français (French)</option>
+                <option value="it" class="bg-white text-on-surface">Italiano (Italian)</option>
+                <option value="ja" class="bg-white text-on-surface">日本語 (Japanese)</option>
+                <option value="zh" class="bg-white text-on-surface">中文 (Chinese)</option>
+                <option value="pt" class="bg-white text-on-surface">Português (Portuguese)</option>
+                <option value="nl" class="bg-white text-on-surface">Nederlands (Dutch)</option>
+                <option value="pl" class="bg-white text-on-surface">Polski (Polish)</option>
+                <option value="ru" class="bg-white text-on-surface">Русский (Russian)</option>
+                <option value="ko" class="bg-white text-on-surface">한국어 (Korean)</option>
+                <option value="da" class="bg-white text-on-surface">Dansk (Danish)</option>
+                <option value="hi" class="bg-white text-on-surface">हिन्दी (Hindi)</option>
+                <option value="ar" class="bg-white text-on-surface">العربية (Arabic)</option>
+                <option value="fil" class="bg-white text-on-surface">Filipino (Philippine)</option>
+                <option value="id" class="bg-white text-on-surface">Bahasa Indonesia (Indonesian)</option>
+                <option value="fj" class="bg-white text-on-surface">Vosa Vakaviti (Fijian)</option>
+            </select>
+            <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-white">
+                <span class="material-symbols-outlined text-sm">expand_more</span>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="w-full py-6 md:py-8 text-center text-xs text-on-surface-variant/70 space-y-1 mt-auto border-t border-slate-100 bg-white md:bg-transparent">
+    <p>© 2026 Wetland High School</p>
+    <p>Hokitika, New Zealand</p>
+</footer>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    
+    const firebaseConfig = {
+        apiKey: "AIzaSyCT10o03Puc_hz3TH7wTSsv1djexO5BBEY",
+        authDomain: "internationalstudentapp-b9b30.firebaseapp.com",
+        databaseURL: "https://internationalstudentapp-b9b30-default-rtdb.firebaseio.com",
+        projectId: "internationalstudentapp-b9b30",
+        storageBucket: "internationalstudentapp-b9b30.firebasestorage.app",
+        messagingSenderId: "202468323325",
+        appId: "1:202468323325:web:44f0b5a41c8b5d35083394",
+        measurementId: "G-HXXH6FJ8EX"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    let userId = localStorage.getItem('userId') || null; 
+    let currentLang = localStorage.getItem('userLanguage') || 'en';
+
+    const englishMaster = {
+        back_to_dashboard: "Back to Dashboard",
+        page_title: "Settings",
+        card_label: "Global Preference",
+        card_title: "Change Language",
+        card_desc: "Select your preferred language. \n\nIt will take a moment for the change to apply on first load. \n\nThe translations are done by a Program and might not be correct."
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            userId = user.uid;
+            localStorage.setItem('userId', user.uid);
+
+            try {
+                // 1. Frische Daten direkt aus Firestore holen
+                const userRef = doc(db, "users", userId);
+                const userSnap = await getDoc(userRef);
+                
+                if (userSnap.exists() && userSnap.data().language) {
+                    currentLang = userSnap.data().language;
+                    localStorage.setItem('userLanguage', currentLang);
+                }
+            } catch (e) {
+                console.warn("Could not fetch user profile live, using cache:", e.message);
+                // Fallback auf LocalStorage, falls Firestore blockiert ist
+                currentLang = localStorage.getItem('userLanguage') || 'en';
+            }
+
+            // 2. Badge oben rechts aktualisieren
+            const langBadge = document.getElementById('currentLanguageLabel');
+            if (langBadge) {
+                langBadge.innerText = currentLang.toUpperCase();
+            }
+
+            // 3. UI mit der korrekten Sprache initialisieren
+            initSettings();
+        } else {
+            window.location.href = 'login.html';
+        }
+    });
+
+    function initSettings() {
+        const switcher = document.getElementById('languageSwitcher');
+        switcher.value = currentLang;
+
+        switcher.removeEventListener('change', handleLanguageChange);
+        switcher.addEventListener('change', handleLanguageChange);
+
+        renderPage();
+    }
+
+    async function handleLanguageChange(e) {
+        const selectedLang = e.target.value;
+        console.log("Wechsle Sprache zu:", selectedLang);
+        
+        localStorage.setItem('userLanguage', selectedLang);
+        currentLang = selectedLang;
+        
+        const langBadge = document.getElementById('currentLanguageLabel');
+        if (langBadge) {
+            langBadge.innerText = selectedLang.toUpperCase();
+        }
+        
+        if (userId) {
+            try {
+                const userRef = doc(db, "users", userId);
+                await updateDoc(userRef, {
+                    language: selectedLang
+                });
+                console.log("Preference saved in user profile.");
+            } catch (err) {
+                console.error("User profile update failed:", err.message);
+            }
+        }
+
+        await renderPage();
+    }
+
+    async function renderPage() {
+        document.body.style.display = 'flex';
+        document.documentElement.lang = currentLang;
+        
+        // Unterstützt RTL für Arabisch
+        if (currentLang === 'ar') {
+            document.documentElement.dir = "rtl";
+        } else {
+            document.documentElement.dir = "ltr";
+        }
+        
+        const translations = await getTranslationData(currentLang);
+        applyTranslations(translations);
+    }
+
+    async function getTranslationData(lang) {
+        if (lang === 'en') return englishMaster;
+
+        const docRef = doc(db, "app_content", "settings_texts");
+        let existingData = {};
+        
+        try {
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                existingData = docSnap.data();
+            }
+        } catch (e) {
+            console.warn("Could not read app_content:", e.message);
+        }
+
+        let missingKeys = Object.keys(englishMaster).filter(key => !existingData[key] || !existingData[key][lang]);
+
+        if (missingKeys.length === 0) {
+            let flattened = {};
+            Object.keys(englishMaster).forEach(key => { flattened[key] = existingData[key][lang]; });
+            return flattened;
+        }
+
+        console.log(`Translating ${missingKeys.length} fields for '${lang}' via API...`);
+        let tempTranslations = { ...existingData };
+        let hasNewTranslations = false;
+
+        for (let key of missingKeys) {
+            const translatedText = await callTranslationAPI(englishMaster[key], lang);
+            if (translatedText !== "__FAILED__") {
+                if (!tempTranslations[key]) tempTranslations[key] = {};
+                tempTranslations[key][lang] = translatedText;
+                tempTranslations[key]['en'] = englishMaster[key];
+                hasNewTranslations = true;
+            }
+        }
+
+        if (hasNewTranslations) {
+            try {
+                await setDoc(docRef, tempTranslations, { merge: true });
+                console.log("New translations saved in Firestore cache!");
+            } catch (dbError) {
+                console.error("Failed to save cache:", dbError.message);
+            }
+        }
+
+        let flattened = {};
+        Object.keys(englishMaster).forEach(key => { 
+            flattened[key] = tempTranslations[key]?.[lang] || englishMaster[key]; 
+        });
+        return flattened;
+    }
+
+    async function callTranslationAPI(text, targetLang) {
+        try {
+            // MyMemory verarbeitet "fil" oft besser als "tl" (Tagalog), konvertiert ISO-Keys bei Bedarf
+            let apiLang = targetLang.toLowerCase();
+            const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${apiLang}`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("Network Error");
+            
+            const data = await response.json();
+            if (data.responseData && data.responseData.translatedText) {
+                return data.responseData.translatedText;
+            }
+        } catch (err) {
+            console.error("Translation API Error:", err.message);
+        }
+        return "__FAILED__"; 
+    }
+
+    function applyTranslations(data) {
+        document.querySelectorAll('[data-translate]').forEach(el => {
+            const key = el.getAttribute('data-translate');
+            if (data[key]) el.innerText = data[key];
+        });
+    }
+</script>
+</body>
+</html>

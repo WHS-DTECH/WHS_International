@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Dashboard | International Student App</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+          tailwind.config = {
+            darkMode: "class",
+            theme: {
+              extend: {
+                "colors": {
+                        "tertiary-container": "#733100", "surface-variant": "#e0e3e5", "tertiary": "#502000",
+                        "on-primary-fixed-variant": "#0b513d", "on-tertiary-fixed": "#331200", "on-surface": "#191c1e",
+                        "inverse-primary": "#95d3ba", "secondary-fixed-dim": "#9bccf6", "primary-fixed-dim": "#95d3ba",
+                        "surface-container-low": "#f2f4f6", "tertiary-fixed-dim": "#ffb68e", "tertiary-fixed": "#ffdbca",
+                        "secondary-container": "#a3d4ff", "on-tertiary": "#ffffff", "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff", "on-background": "#191c1e", "error-container": "#ffdad6",
+                        "outline": "#707974", "primary": "#003527", "surface-container": "#eceef0",
+                        "on-secondary-fixed": "#001e30", "surface-container-highest": "#e0e3e5", "surface-bright": "#f7f9fb",
+                        "primary-container": "#064e3b", "on-error": "#ffffff", "error": "#ba1a1a",
+                        "surface-tint": "#2b6954", "on-secondary": "#ffffff", "surface-dim": "#d8dadc",
+                        "on-error-container": "#93000a", "secondary": "#2f6388", "surface": "#f7f9fb",
+                        "on-surface-variant": "#404944", "on-tertiary-fixed-variant": "#763300", "inverse-on-surface": "#eff1f3",
+                        "primary-fixed": "#b0f0d6", "secondary-fixed": "#cbe6ff", "on-primary-fixed": "#002117",
+                        "inverse-surface": "#2d3133", "background": "#f7f9fb", "outline-variant": "#bfc9c3",
+                        "on-secondary-fixed-variant": "#0e4b6f", "on-tertiary-container": "#ff985a",
+                        "surface-container-high": "#e6e8ea", "on-primary-container": "#80bea6", "on-secondary-container": "#275c81"
+                },
+                "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                "spacing": { "gutter-mobile": "16px", "margin-desktop": "64px", "unit": "8px", "margin-mobile": "20px", "tile-gap": "16px", "gutter-desktop": "24px" },
+                "fontFamily": { "body-md": ["Inter"], "headline-lg": ["Montserrat"], "headline-lg-mobile": ["Montserrat"], "label-sm": ["Inter"], "body-lg": ["Inter"], "headline-md": ["Montserrat"], "display-lg": ["Montserrat"], "label-md": ["Inter"] },
+                "fontSize": { "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}], "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}], "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}], "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}], "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}], "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}], "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}], "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}] }
+              },
+            },
+          }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .action-tile { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); -webkit-tap-highlight-color: transparent; }
+        @media (min-width: 768px) {
+            .action-tile:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
+        }
+        body { display: none; } 
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col">
+
+<header class="sticky top-0 w-full z-50 flex justify-between items-center px-4 md:px-margin-desktop py-4 bg-surface border-b border-outline-variant">
+    <div class="flex items-center gap-2 max-w-[60%]">
+        <span class="text-lg md:text-headline-md font-bold text-primary truncate">International Students App</span>
+    </div>
+    
+    <div class="flex items-center gap-2 md:gap-4">
+        <div class="flex items-center gap-1 md:gap-2 px-2.5 py-1 bg-primary-container/10 rounded-full border border-primary/20 max-w-[120px] md:max-w-none">
+            <span id="userName" class="text-xs md:text-label-md text-primary font-bold truncate">Loading...</span>
+            <span class="material-symbols-outlined text-sm md:text-base text-primary" data-icon="account_circle">account_circle</span>
+        </div>
+        
+        <button id="logoutBtn" class="flex items-center gap-1 text-on-surface-variant hover:text-error transition-colors text-xs md:text-label-md font-bold p-1">
+            <span class="material-symbols-outlined text-[18px] md:text-[20px]" data-icon="logout">logout</span>
+            <span id="logout-text" class="hidden md:inline" data-translate="logout">Logout</span>
+        </button>
+    </div>
+</header>
+
+<main class="flex-1 max-w-7xl mx-auto w-full p-4 md:p-margin-desktop">
+    <div class="mb-8 md:mb-12 text-center">
+        <h1 id="welcomeHeading" class="text-2xl md:text-display-lg font-bold text-primary mb-3 px-2" data-translate="welcomeHeading">Dashboard</h1>
+        <p id="welcomeSubheading" class="text-sm md:text-body-lg text-on-surface-variant max-w-2xl mx-auto px-4" data-translate="welcomeSubheading">
+            Welcome to the Westland high international students hub. Access your reports and informations below.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+        <a class="action-tile bg-white border border-outline-variant rounded-xl p-6 md:p-8 flex flex-col items-center text-center group active:bg-surface-container" href="information.html">
+            <div class="w-14 h-14 md:w-16 md:h-16 bg-primary-container/10 rounded-full flex items-center justify-center text-primary mb-4 md:mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                <span class="material-symbols-outlined text-2xl md:text-3xl" data-icon="info">info</span>
+            </div>
+            <h3 class="text-lg md:text-headline-md font-bold text-primary mb-1 md:mb-2" data-translate="infoTitle">Information</h3>
+            <p class="text-on-surface-variant text-xs md:text-label-md" data-translate="infoDesc">Details and useful resources</p>
+        </a>
+
+        <a class="action-tile bg-white border border-outline-variant rounded-xl p-6 md:p-8 flex flex-col items-center text-center group active:bg-surface-container" href="calendar.html">
+            <div class="w-14 h-14 md:w-16 md:h-16 bg-primary-container/10 rounded-full flex items-center justify-center text-primary mb-4 md:mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                <span class="material-symbols-outlined text-2xl md:text-3xl" data-icon="event">event</span>
+            </div>
+            <h3 class="text-lg md:text-headline-md font-bold text-primary mb-1 md:mb-2" data-translate="eventsTitle">Events</h3>
+            <p class="text-on-surface-variant text-xs md:text-label-md" data-translate="eventsDesc">Upcoming school trips and gatherings</p>
+        </a>
+
+        <a class="action-tile bg-white border border-outline-variant rounded-xl p-6 md:p-8 flex flex-col items-center text-center group active:bg-surface-container" href="activity.html">
+            <div class="w-14 h-14 md:w-16 md:h-16 bg-primary-container/10 rounded-full flex items-center justify-center text-primary mb-4 md:mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                <span class="material-symbols-outlined text-2xl md:text-3xl" data-icon="explore">explore</span>
+            </div>
+            <h3 class="text-lg md:text-headline-md font-bold text-primary mb-1 md:mb-2" data-translate="activitiesTitle">Activities</h3>
+            <p class="text-on-surface-variant text-xs md:text-label-md" data-translate="activitiesDesc">Local community and sport activities</p>
+        </a>
+
+        <a class="action-tile bg-white border border-outline-variant rounded-xl p-6 md:p-8 flex flex-col items-center text-center group active:bg-surface-container" href="map.html">
+            <div class="w-14 h-14 md:w-16 md:h-16 bg-primary-container/10 rounded-full flex items-center justify-center text-primary mb-4 md:mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                <span class="material-symbols-outlined text-2xl md:text-3xl" data-icon="map">map</span>
+            </div>
+            <h3 class="text-lg md:text-headline-md font-bold text-primary mb-1 md:mb-2" data-translate="mapTitle">Map</h3>
+            <p class="text-on-surface-variant text-xs md:text-label-md" data-translate="mapDesc">A map of the school grounds</p>
+        </a>
+
+        <a class="action-tile bg-white border border-outline-variant rounded-xl p-6 md:p-8 flex flex-col items-center text-center group active:bg-surface-container" href="reports.html">
+            <div class="w-14 h-14 md:w-16 md:h-16 bg-primary-container/10 rounded-full flex items-center justify-center text-primary mb-4 md:mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                <span class="material-symbols-outlined text-2xl md:text-3xl" data-icon="description">description</span>
+            </div>
+            <h3 class="text-lg md:text-headline-md font-bold text-primary mb-1 md:mb-2" data-translate="reportsTitle">Monthly Reports</h3>
+            <p class="text-on-surface-variant text-xs md:text-label-md" data-translate="reportsDesc">Submit and review monthly reports</p>
+        </a>
+
+        <a id="tileStudentsOverview" class="action-tile hidden bg-white border border-outline-variant rounded-xl p-6 md:p-8 flex flex-col items-center text-center group active:bg-surface-container" href="students_overview.html">
+            <div class="w-14 h-14 md:w-16 md:h-16 bg-primary-container/10 rounded-full flex items-center justify-center text-primary mb-4 md:mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                <span class="material-symbols-outlined text-2xl md:text-3xl" data-icon="group">group</span>
+            </div>
+            <h3 class="text-lg md:text-headline-md font-bold text-primary mb-1 md:mb-2" data-translate="studentsTitle">Students Overview</h3>
+            <p class="text-on-surface-variant text-xs md:text-label-md" data-translate="studentsDesc">Manage student accounts</p>
+        </a>
+
+        <a class="action-tile bg-white border border-outline-variant rounded-xl p-6 md:p-8 flex flex-col items-center text-center group active:bg-surface-container" href="settings.html">
+            <div class="w-14 h-14 md:w-16 md:h-16 bg-primary-container/10 rounded-full flex items-center justify-center text-primary mb-4 md:mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                <span class="material-symbols-outlined text-2xl md:text-3xl" data-icon="settings">settings</span>
+            </div>
+            <h3 class="text-lg md:text-headline-md font-bold text-primary mb-1 md:mb-2" data-translate="settingsTitle">Settings</h3>
+            <p class="text-on-surface-variant text-xs md:text-label-md" data-translate="settingsDesc">Language settings</p>
+        </a>
+    </div>
+</main>
+
+<footer class="w-full py-6 px-4 md:px-margin-desktop flex flex-col-reverse md:flex-row justify-between items-center gap-4 bg-surface-container-lowest border-t border-outline-variant mt-auto text-center md:text-left">
+    <div>
+        <span class="text-xs md:text-label-sm text-on-surface-variant" data-translate="copyright">© 2026 Westland High School Hokitika, New Zealand.</span>
+    </div>
+    <div>
+        <span class="text-lg md:text-headline-md font-bold text-primary">Westland High School</span>
+    </div>
+</footer>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCT10o03Puc_hz3TH7wTSsv1djexO5BBEY",
+        authDomain: "internationalstudentapp-b9b30.firebaseapp.com",
+        databaseURL: "https://internationalstudentapp-b9b30-default-rtdb.firebaseio.com",
+        projectId: "internationalstudentapp-b9b30",
+        storageBucket: "internationalstudentapp-b9b30.firebasestorage.app",
+        messagingSenderId: "202468323325",
+        appId: "1:202468323325:web:44f0b5a41c8b5d35083394",
+        measurementId: "G-HXXH6FJ8EX"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const userRole = localStorage.getItem('userRole');
+    const userName = localStorage.getItem('userName');
+
+    const englishMaster = {
+        welcomeHeading: 'Dashboard',
+        welcomeSubheading: 'Welcome to the Westland High International Students App. Access your reports and information below.',
+        logout: 'Logout',
+        infoTitle: 'Information',
+        infoDesc: 'Details and useful resources',
+        eventsTitle: 'Events',
+        eventsDesc: 'Upcoming school trips and gatherings',
+        activitiesTitle: 'Activities',
+        activitiesDesc: 'Local community and sport activities',
+        studentsTitle: 'Students Overview',
+        studentsDesc: 'Manage student accounts',
+        reportsTitle: 'Monthly Reports',
+        reportsDesc: 'Submit and review monthly reports',
+        mapTitle: 'Map',
+        mapDesc: 'A map of the school grounds', 
+        settingsTitle: 'Settings',
+        settingsDesc: 'Language settings',
+        copyright: '© 2026 Westland High School Hokitika, New Zealand.'
+    };
+
+    onAuthStateChanged(auth, (user) => {
+        if (!user || !userRole) {
+            window.location.href = 'login.html';
+        } else {
+            initDashboard();
+        }
+    });
+
+    async function initDashboard() {
+        document.body.style.display = 'flex';
+        
+        const currentLang = localStorage.getItem('userLanguage') || 'en';
+
+        document.getElementById('userName').innerText = `${userName} (${userRole})`;
+        document.documentElement.lang = currentLang;
+
+        const localizedTexts = await getTranslationData(currentLang);
+        applyTranslations(localizedTexts);
+
+        if (userRole === "admin") {
+            document.getElementById('tileStudentsOverview')?.classList.remove('hidden');
+            const statusWrapper = document.getElementById('portalStatusWrapper');
+            if (statusWrapper) {
+                statusWrapper.classList.remove('hidden');
+                statusWrapper.style.display = 'flex';
+            }
+
+            const isPortalOpen = localStorage.getItem('portalActive') === 'true';
+            const portalLabel = document.getElementById('portalLabel');
+            if (portalLabel) {
+                portalLabel.innerText = isPortalOpen ? localizedTexts.portalOpen : localizedTexts.portalClosed;
+                portalLabel.className = isPortalOpen ? "font-label-sm text-label-sm font-bold text-primary" : "font-label-sm text-label-sm font-bold text-error";
+            }
+        }
+    }
+
+    async function getTranslationData(lang) {
+        if (lang === 'en') return englishMaster;
+
+        const docRef = doc(db, "app_content", "dashboard_texts");
+        
+        try {
+            const docSnap = await getDoc(docRef);
+            let existingData = docSnap.exists() ? docSnap.data() : {};
+
+            let missingKeys = [];
+            Object.keys(englishMaster).forEach(key => {
+                if (!existingData[key] || !existingData[key][lang]) {
+                    missingKeys.push(key);
+                }
+            });
+
+            if (missingKeys.length === 0) {
+                let flattened = {};
+                Object.keys(englishMaster).forEach(key => {
+                    flattened[key] = existingData[key][lang];
+                });
+                return flattened;
+            }
+
+            console.log(`Translations for '${lang}' are missing. Generating via API...`);
+            
+            for (let key of missingKeys) {
+                const translatedText = await callTranslationAPI(englishMaster[key], lang);
+                if (!existingData[key]) existingData[key] = {};
+                
+                existingData[key][lang] = translatedText;
+                existingData[key]['en'] = englishMaster[key];
+            }
+
+            await setDoc(docRef, existingData, { merge: true });
+
+            let flattened = {};
+            Object.keys(englishMaster).forEach(key => {
+                flattened[key] = existingData[key][lang];
+            });
+            return flattened;
+
+        } catch (e) {
+            console.error("Error loading/ translating data, using fallback English:", e);
+            return englishMaster;
+        }
+    }
+
+    async function callTranslationAPI(text, targetLang) {
+        try {
+            const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang.toLowerCase()}`;
+            
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("Network Error");
+            
+            const data = await response.json();
+            if (data.responseData && data.responseData.translatedText) {
+                return data.responseData.translatedText;
+            }
+        } catch (err) {
+            console.error("Translation API Error:", err.message);
+        }
+        return "__FAILED__"; 
+    }
+
+    function applyTranslations(data) {
+        document.querySelectorAll('[data-translate]').forEach(el => {
+            const key = el.getAttribute('data-translate');
+            if (data[key]) {
+                el.innerText = data[key];
+            }
+        });
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.clear();
+        window.location.href = 'login.html';
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>StudentReports | International Student App</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+          tailwind.config = {
+            darkMode: "class",
+            theme: {
+              extend: {
+                "colors": {
+                    "primary": "#003527", 
+                    "primary-container": "#064e3b", 
+                    "on-surface": "#191c1e",
+                    "on-surface-variant": "#404944", 
+                    "outline-variant": "#bfc9c3",
+                    "error": "#ba1a1a"
+                },
+                "fontFamily": { 
+                    "body-md": ["Inter"], 
+                    "headline-md": ["Montserrat"] 
+                }
+              }
+            }
+          }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { display: none; }
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="bg-[#f7f9fb] text-on-surface font-body-md min-h-screen flex flex-col">
+
+<header class="w-full flex justify-between items-center px-4 md:px-16 py-4 bg-white border-b border-outline-variant gap-2">
+    <div class="flex items-center gap-4 min-w-0">
+        <span class="font-headline-md text-lg md:text-xl font-bold text-primary truncate">International Student App</span>
+    </div>
+    
+    <div class="flex items-center gap-3 md:gap-6 flex-shrink-0">
+        <a href="index.html" class="text-xs md:text-sm font-medium text-on-surface-variant hover:text-primary flex items-center gap-1 transition-colors">
+            <span class="material-symbols-outlined text-base">arrow_back</span>
+            <span class="hidden sm:inline" data-translate="back_to_dashboard">Back to Dashboard</span>
+        </a>
+        <div id="currentLanguageLabel" class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-on-surface-variant bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg cursor-pointer hover:bg-slate-200 hover:text-primary transition-all">
+            --
+        </div>
+        <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary text-2xl md:text-3xl">account_circle</span>
+    </div>
+</header>
+
+<main class="flex-1 max-w-5xl w-full mx-auto px-4 md:px-6 pt-6 md:pt-12 space-y-6 md:space-y-8">
+    
+    <div id="statusBanner" class="bg-white border border-outline-variant/60 rounded-xl p-4 md:p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h1 class="font-headline-md text-xl md:text-2xl font-bold text-primary" data-translate="page_title">Monthly Reports</h1>
+            <p class="text-xs md:text-sm text-on-surface-variant mt-1" id="statusSubtitle">Checking system configuration...</p>
+        </div>
+        <div id="globalStatusBadge" class="px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-gray-100 text-gray-600 self-start md:self-auto">
+            Checking...
+        </div>
+    </div>
+
+    <div id="adminPanel" class="hidden bg-white border border-outline-variant/60 rounded-xl p-4 md:p-6 shadow-sm space-y-6">
+        <h2 class="font-headline-md text-base md:text-lg font-bold text-primary border-b border-outline-variant/40 pb-2">Admin Control Panel</h2>
+        
+        <div class="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-end gap-4">
+            <div class="w-full sm:w-40">
+                <label class="block text-xs font-semibold text-on-surface-variant uppercase mb-1">Month</label>
+                <select id="selectMonth" class="w-full rounded-lg border-outline-variant text-sm focus:border-primary focus:ring-primary h-10">
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                </select>
+            </div>
+            <div class="w-full sm:w-32">
+                <label class="block text-xs font-semibold text-on-surface-variant uppercase mb-1">Year</label>
+                <input type="number" id="inputYear" value="2026" min="2020" max="2040" class="w-full rounded-lg border-outline-variant text-sm focus:border-primary focus:ring-primary h-10">
+            </div>
+            
+            <button id="btnRequestReports" class="w-full sm:w-auto bg-primary hover:bg-primary-container text-white px-5 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors shadow-sm h-10">
+                <span class="material-symbols-outlined text-sm">campaign</span>
+                <span>Request Reports</span>
+            </button>
+            <button id="btnCloseMonth" class="hidden w-full sm:w-auto bg-error hover:bg-red-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors shadow-sm h-10">
+                <span class="material-symbols-outlined text-sm">lock</span>
+                <span>Close Active Month</span>
+            </button>
+        </div>
+
+        <div id="liveTrackerSection" class="hidden space-y-3">
+            <h3 class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Submission Tracker:</h3>
+            <div id="studentGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
+        </div>
+    </div>
+
+    <div id="studentSubmissionPanel" class="hidden bg-white border border-outline-variant/60 rounded-xl p-4 md:p-6 shadow-sm space-y-6">
+        <div class="border-b border-outline-variant/40 pb-3 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+            <h2 class="font-headline-md text-base md:text-lg font-bold text-primary" id="submissionFormTitle">Submit Report</h2>
+            <span class="text-xs font-bold text-error bg-red-50 border border-red-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5 self-start sm:self-auto" data-translate="please_answer_english">
+                <span class="material-symbols-outlined text-sm">g_translate</span> Please answer in English!
+            </span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-xs font-bold text-on-surface-variant uppercase mb-1.5" data-translate="label_host_family">Relationship to host family</label>
+                <select id="repHostFamily" class="w-full rounded-lg border-outline-variant text-sm focus:border-primary focus:ring-primary h-10">
+                    <option value="Excellent" data-translate="opt_excellent">Excellent</option>
+                    <option value="Good" data-translate="opt_good">Good</option>
+                    <option value="Okay" data-translate="opt_okay">Okay</option>
+                    <option value="Bad" data-translate="opt_bad">Bad</option>
+                    <option value="Really bad" data-translate="opt_really_bad">Really bad</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-on-surface-variant uppercase mb-1.5" data-translate="label_host_siblings">Relationship to host siblings</label>
+                <select id="repHostSiblings" class="w-full rounded-lg border-outline-variant text-sm focus:border-primary focus:ring-primary h-10">
+                    <option value="Excellent" data-translate="opt_excellent">Excellent</option>
+                    <option value="Good" data-translate="opt_good">Good</option>
+                    <option value="Okay" data-translate="opt_okay">Okay</option>
+                    <option value="Bad" data-translate="opt_bad">Bad</option>
+                    <option value="Really bad" data-translate="opt_really_bad">Really bad</option>
+                    <option value="Don't have host siblings" data-translate="opt_no_siblings">Don't have them</option>
+                </select>
+            </div>
+            <div class="sm:col-span-2 md:col-span-1">
+                <label class="block text-xs font-bold text-on-surface-variant uppercase mb-1.5" data-translate="label_overall_happiness">Are you</label>
+                <select id="repHappiness" class="w-full rounded-lg border-outline-variant text-sm focus:border-primary focus:ring-primary h-10">
+                    <option value="Really happy" data-translate="opt_really_happy">Really happy</option>
+                    <option value="Happy" data-translate="opt_happy">Happy</option>
+                    <option value="Mostly happy" data-translate="opt_mostly_happy">Mostly happy</option>
+                    <option value="Okay" data-translate="opt_okay">Okay</option>
+                    <option value="Really bad" data-translate="opt_really_bad">Really bad</option>
+                </select>
+            </div>
+        </div>
+
+        <hr class="border-outline-variant/40">
+
+        <div class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-on-surface-variant uppercase mb-1" data-translate="label_school_work">School work</label>
+                <textarea id="repSchool" rows="3" class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary text-sm p-3" data-translate-placeholder="placeholder_school" placeholder="How are your classes going? Any struggles?"></textarea>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-on-surface-variant uppercase mb-1" data-translate="label_activities">After school activities</label>
+                <textarea id="repActivities" rows="3" class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary text-sm p-3" data-translate-placeholder="placeholder_activities" placeholder="What are you doing after school? Sports, clubs, hobbies?"></textarea>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-on-surface-variant uppercase mb-1" data-translate="label_friends">Friends</label>
+                <textarea id="repFriends" rows="3" class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary text-sm p-3" data-translate-placeholder="placeholder_friends" placeholder="Have you made new friends? How is your social life?"></textarea>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-on-surface-variant uppercase mb-1" data-translate="label_concerns">Concerns</label>
+                <textarea id="repConcerns" rows="3" class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary text-sm p-3" data-translate-placeholder="placeholder_concerns" placeholder="Is there anything you need help with? (Write 'None' if everything is perfect)"></textarea>
+            </div>
+        </div>
+        
+        <div class="flex justify-end">
+            <button id="btnSubmitReport" class="w-full sm:w-auto justify-center bg-primary hover:bg-primary-container text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">send</span>
+                <span data-translate="btn_submit">Submit Monthly Report</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="space-y-4">
+        <h2 class="font-headline-md text-lg md:text-xl font-bold text-primary" id="historyTitle">Report Archive</h2>
+        <div id="historyContainer" class="space-y-4"></div>
+    </div>
+
+</main>
+
+<footer class="w-full py-6 md:py-8 text-center text-xs text-on-surface-variant/70 space-y-1 mt-auto border-t border-slate-100 bg-white">
+    <p>© 2026 Westland High School</p>
+    <p>Hokitika, New Zealand</p>
+</footer>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    
+    const firebaseConfig = {
+        apiKey: "AIzaSyCT10o03Puc_hz3TH7wTSsv1djexO5BBEY",
+        authDomain: "internationalstudentapp-b9b30.firebaseapp.com",
+        databaseURL: "https://internationalstudentapp-b9b30-default-rtdb.firebaseio.com",
+        projectId: "internationalstudentapp-b9b30",
+        storageBucket: "internationalstudentapp-b9b30.firebasestorage.app",
+        messagingSenderId: "202468323325",
+        appId: "1:202468323325:web:44f0b5a41c8b5d35083394",
+        measurementId: "G-HXXH6FJ8EX"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    let currentUser = null;
+    // KORREKTUR: Direkt den einheitlichen Key 'userLanguage' abfragen
+    let currentLang = localStorage.getItem('userLanguage') || 'en';
+    let userRole = localStorage.getItem('userRole') || 'student';
+    let isAdmin = (userRole === 'admin');
+
+    let reportsActive = false;
+    let activeMonth = "";
+    let activeYear = "";
+
+    const uiMaster = {
+        back_to_dashboard: "Back to Dashboard",
+        page_title: "Monthly Reports",
+        please_answer_english: "Please answer all questions in English!",
+        label_host_family: "Relationship to host family",
+        label_host_siblings: "Relationship to host siblings",
+        label_overall_happiness: "Are you overall",
+        label_school_work: "School work",
+        label_activities: "After school activities",
+        label_friends: "Friends",
+        label_concerns: "Concerns",
+        placeholder_school: "How are your classes going? Any struggles?",
+        placeholder_activities: "What are you doing after school? Sports, clubs, hobbies?",
+        placeholder_friends: "Have you made new friends? How is your social life?",
+        placeholder_concerns: "Is there anything you need help with or are there any concerns? (Write 'None' if everything is perfect)",
+        opt_excellent: "Excellent",
+        opt_good: "Good",
+        opt_okay: "Okay",
+        opt_bad: "Bad",
+        opt_really_bad: "Really bad",
+        opt_no_siblings: "Don't have them",
+        opt_really_happy: "Really happy",
+        opt_happy: "Happy",
+        opt_mostly_happy: "Mostly happy",
+        btn_submit: "Submit Monthly Report",
+        status_active: "Collection active for Period",
+        status_inactive: "There is currently no submission window open.",
+        status_checking: "Checking system configuration...",
+        title_submit_report: "Submit Report for",
+        title_past_reports: "Your Past Reports",
+        title_all_submissions: "All Received Submissions",
+        success_submitted_title: "Report Already Submitted",
+        success_submitted_desc: "You have successfully locked and dispatched your master copy for"
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            currentUser = user;
+
+            const langBadge = document.getElementById('currentLanguageLabel');
+            if (langBadge) {
+                langBadge.innerText = currentLang.toUpperCase();
+            }
+
+            // KORREKTUR: Die gesamte Boot-Sequenz ist jetzt fehlertolerant gekapselt
+            try {
+                await syncSystemSettings();
+                await checkUserRoleRealtime(); 
+                await loadPageTranslationsPipeline();
+                setupLayout();
+                await loadDataPipeline();
+            } catch (criticalError) {
+                console.error("Critical error during page initialization:", criticalError);
+                // Fallback-Layout triggern, falls Datenpipelines blockieren
+                setupLayout();
+            } finally {
+                // KORREKTUR: Das Sicherheitsnetz sorgt dafür, dass die UI in jedem Fall sichtbar wird
+                document.body.style.display = 'flex';
+            }
+        } else {
+            window.location.href = 'login.html';
+        }
+    });
+
+    async function checkUserRoleRealtime() {
+        try {
+            const uSnap = await getDoc(doc(db, "users", currentUser.uid));
+            if (uSnap.exists()) {
+                const data = uSnap.data();
+                userRole = data.role || 'student';
+                isAdmin = (userRole === 'admin');
+                localStorage.setItem('userRole', userRole);
+            }
+        } catch(e) { console.error("Error fetching live user role", e); }
+    }
+
+    async function syncSystemSettings() {
+        const sysRef = doc(db, "system_settings", "reports_config");
+        try {
+            const sysSnap = await getDoc(sysRef);
+            if (sysSnap.exists()) {
+                const data = sysSnap.data();
+                reportsActive = data.reports_active || false;
+                activeMonth = data.active_month || "";
+                activeYear = data.active_year || "";
+            } else {
+                await setDoc(sysRef, { reports_active: false, active_month: "", active_year: "" });
+            }
+        } catch(e) { console.error("Error reading system configurations:", e); }
+    }
+
+    function setupLayout() {
+        const badge = document.getElementById('globalStatusBadge');
+        const subtitle = document.getElementById('statusSubtitle');
+        
+        const activeTrans = JSON.parse(localStorage.getItem('cachedUiTexts')) || uiMaster;
+
+        if (badge && subtitle) {
+            if (reportsActive) {
+                badge.className = "px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-green-100 text-green-700 flex items-center gap-1 animate-pulse self-start md:self-auto";
+                badge.innerHTML = `<span class="w-1.5 h-1.5 bg-green-600 rounded-full"></span> Active`;
+                subtitle.innerText = `${activeTrans.status_active || 'Collection active for Period'}: ${activeMonth} ${activeYear}`;
+            } else {
+                badge.className = "px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-gray-100 text-gray-500 self-start md:self-auto";
+                badge.innerText = "Not Active";
+                subtitle.innerText = activeTrans.status_inactive || "There is currently no submission window open.";
+            }
+        }
+
+        const adminPanel = document.getElementById('adminPanel');
+        const historyTitle = document.getElementById('historyTitle');
+        const liveTrackerSection = document.getElementById('liveTrackerSection');
+        const btnRequestReports = document.getElementById('btnRequestReports');
+        const btnCloseMonth = document.getElementById('btnCloseMonth');
+        const studentSubmissionPanel = document.getElementById('studentSubmissionPanel');
+        const submissionFormTitle = document.getElementById('submissionFormTitle');
+
+        if (isAdmin) {
+            if (adminPanel) adminPanel.classList.remove('hidden');
+            if (historyTitle) historyTitle.innerText = activeTrans.title_all_submissions || "All Received Submissions";
+            
+            if (reportsActive) {
+                if (liveTrackerSection) liveTrackerSection.classList.remove('hidden');
+                if (btnRequestReports) btnRequestReports.classList.add('hidden');
+                if (btnCloseMonth) btnCloseMonth.classList.remove('hidden');
+            } else {
+                if (liveTrackerSection) liveTrackerSection.classList.add('hidden');
+                if (btnRequestReports) btnRequestReports.classList.remove('hidden');
+                if (btnCloseMonth) btnCloseMonth.classList.add('hidden');
+            }
+            setupAdminListeners();
+        } else {
+            if (historyTitle) historyTitle.innerText = activeTrans.title_past_reports || "My Past Reports";
+            if (reportsActive) {
+                if (studentSubmissionPanel) {
+                    studentSubmissionPanel.classList.remove('hidden');
+                    // Reset class falls es vorher grün überschrieben wurde
+                    studentSubmissionPanel.className = "bg-white border border-outline-variant/60 rounded-xl p-4 md:p-6 shadow-sm space-y-6";
+                }
+                if (submissionFormTitle) submissionFormTitle.innerText = `${activeTrans.title_submit_report || 'Submit Report for'} ${activeMonth} ${activeYear}`;
+                setupStudentListeners();
+            } else {
+                if (studentSubmissionPanel) studentSubmissionPanel.classList.add('hidden');
+            }
+        }
+    }
+
+    async function loadDataPipeline() {
+        try {
+            if (isAdmin) {
+                if (reportsActive) {
+                    await renderAdminTracker();
+                }
+                await renderAllReportsArchive();
+            } else {
+                if (reportsActive) {
+                    await checkStudentSubmissionStatus();
+                }
+                await renderStudentPersonalHistory();
+            }
+        } catch (e) {
+            console.error("Error running data render pipeline:", e);
+        }
+    }
+
+    // Verkürzte/gesicherte Zuweisung der Event-Listener
+    function setupAdminListeners() {
+        const btnReq = document.getElementById('btnRequestReports');
+        const btnCls = document.getElementById('btnCloseMonth');
+
+        if (btnReq) {
+            const newBtnReq = btnReq.cloneNode(true);
+            btnReq.replaceWith(newBtnReq);
+            newBtnReq.addEventListener('click', async () => {
+                const m = document.getElementById('selectMonth').value;
+                const y = document.getElementById('inputYear').value.trim();
+
+                if (!y) {
+                    alert("Please enter a valid year.");
+                    return;
+                }
+
+                await setDoc(doc(db, "system_settings", "reports_config"), {
+                    reports_active: true,
+                    active_month: m,
+                    active_year: y
+                });
+
+                const qUsers = query(collection(db, "users"), where("role", "==", "student"));
+                const usersSnap = await getDocs(qUsers);
+
+                for (let uDoc of usersSnap.docs) {
+                    const uData = uDoc.data();
+                    const reportId = `rep_${m}_${y}_${uDoc.id}`;
+                    
+                    const checkSnap = await getDoc(doc(db, "reports", reportId));
+                    if (!checkSnap.exists()) {
+                        await setDoc(doc(db, "reports", reportId), {
+                            studentId: uDoc.id, // Das ist wichtig!
+                            schuelerName: uData.name || "Unknown Student",
+                            report: "",
+                            monat: m,
+                            jahr: y,
+                            abgegeben: false,
+                            timestamp: Date.now()
+                        });
+                    }
+                }
+
+                alert(`Reports successfully opened for ${m} ${y}!`);
+                window.location.reload();
+            });
+        }
+
+        if (btnCls) {
+            const newBtnCls = btnCls.cloneNode(true);
+            btnCls.replaceWith(newBtnCls);
+            newBtnCls.addEventListener('click', async () => {
+                if (!confirm("Are you sure you want to close this month's active reporting window?")) return;
+
+                await setDoc(doc(db, "system_settings", "reports_config"), {
+                    reports_active: false,
+                    active_month: "",
+                    active_year: ""
+                });
+
+                alert("Collection process closed.");
+                window.location.reload();
+            });
+        }
+    }
+
+    async function renderAdminTracker() {
+        const grid = document.getElementById('studentGrid');
+        if (!grid) return;
+        grid.innerHTML = "";
+
+        try {
+            // 1. Alle aktiven Studenten holen
+            const qUsers = query(collection(db, "users"), where("role", "==", "student"), where("isActive", "==", true));
+            const usersSnap = await getDocs(qUsers);
+
+            if (usersSnap.empty) {
+                grid.innerHTML = `<p class="text-xs text-on-surface-variant/70 italic p-2">No active students found.</p>`;
+                return;
+            }
+
+            // 2. Alle Reports für den aktuellen Zeitraum holen
+            const qReports = query(collection(db, "reports"), where("monat", "==", activeMonth), where("jahr", "==", activeYear));
+            const reportsSnap = await getDocs(qReports);
+
+            // Map befüllen: Wir mappen den Report auf die studentId UND auf die ID des Dokuments
+            const reportMap = new Map();
+            reportsSnap.forEach(rDoc => {
+                const rData = rDoc.data();
+                const rId = rDoc.id;
+                
+                // Speicher unter der studentId, falls vorhanden
+                if (rData.studentId) {
+                    reportMap.set(rData.studentId, { id: rId, ...rData });
+                }
+                // Sicherheitsnetz: Extrahiere die User-ID aus dem Dokumentennamen (rep_Monat_Jahr_UserID)
+                const parts = rId.split('_');
+                if (parts.length >= 4) {
+                    const extractedUid = parts.slice(3).join('_'); // Holt alles nach dem 3. Unterstrich
+                    reportMap.set(extractedUid, { id: rId, ...rData });
+                }
+            });
+
+            // 3. Studenten rendern und Abgleich machen
+            usersSnap.forEach(uDoc => {
+                const uData = uDoc.data();
+                const studentId = uDoc.id;
+                const studentName = uData.name || "Unknown Student";
+                
+                // Report aus der Map holen
+                const reportData = reportMap.get(studentId);
+                
+                // Extrem genaue Prüfung auf das 'abgegeben'-Flag
+                const isAbgegeben = reportData && (reportData.abgegeben === true || reportData.abgegeben === "true");
+
+                const tile = document.createElement('div');
+
+                if (isAbgegeben) {
+                    // GRÜN MIT HAKEN (Abgegeben)
+                    tile.className = "flex items-center justify-between p-3 rounded-lg border border-green-200 bg-green-50/50 cursor-pointer hover:bg-green-50 transition-all touch-manipulation";
+                    tile.innerHTML = `
+                        <span class="text-sm font-medium text-primary truncate mr-2">${studentName}</span>
+                        <span class="material-symbols-outlined text-green-600 font-bold text-xl flex-shrink-0">check_circle</span>
+                    `;
+                    tile.onclick = () => {
+                        const el = document.getElementById(`card-${reportData.id}`);
+                        if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    };
+                } else {
+                    // GRAU OHNE HAKEN (Offen)
+                    tile.className = "flex items-center justify-between p-3 rounded-lg border border-outline-variant/60 bg-white opacity-70";
+                    tile.innerHTML = `
+                        <span class="text-sm font-medium text-on-surface-variant truncate mr-2">${studentName}</span>
+                        <span class="material-symbols-outlined text-gray-400 text-xl flex-shrink-0">radio_button_unchecked</span>
+                    `;
+                }
+                grid.appendChild(tile);
+            });
+
+        } catch (error) {
+            console.error("Error rendering admin tracker:", error);
+            grid.innerHTML = `<p class="text-xs text-error p-2">Error loading tracker list.</p>`;
+        }
+    }
+
+    async function renderAllReportsArchive() {
+        const container = document.getElementById('historyContainer');
+        if (!container) return;
+        container.innerHTML = "";
+
+        const q = query(collection(db, "reports")); 
+        try {
+            const snap = await getDocs(q);
+            
+            const abgegebeneReports = snap.docs
+                .map(d => ({ id: d.id, ...d.data() }))
+                .filter(data => data.abgegeben === true)
+                .sort((a, b) => b.timestamp - a.timestamp); 
+
+            if (abgegebeneReports.length === 0) {
+                container.innerHTML = `<p class="text-sm text-on-surface-variant/70 italic text-center py-8">No finalized reports in archive database yet.</p>`;
+                return;
+            }
+
+            abgegebeneReports.forEach(reportData => {
+                const card = document.createElement('div');
+                card.id = `card-${reportData.id}`;
+                card.className = "bg-white border border-outline-variant/60 rounded-xl p-4 md:p-5 shadow-sm space-y-3 transition-all";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start border-b border-outline-variant/40 pb-2 gap-2">
+                        <div class="min-w-0">
+                            <h3 class="font-bold text-primary text-base truncate">${reportData.schuelerName}</h3>
+                            <p class="text-[10px] md:text-xs text-on-surface-variant/70 truncate">Student ID: ${reportData.studentId}</p>
+                        </div>
+                        <span class="flex-shrink-0 px-2.5 py-1 bg-primary/10 text-primary text-[10px] md:text-xs font-semibold rounded-md">${reportData.monat} ${reportData.jahr}</span>
+                    </div>
+                    <div class="text-sm text-on-surface-variant leading-relaxed whitespace-pre-wrap break-words">${linkify(reportData.report)}</div>
+                `;
+                container.appendChild(card);
+            });
+        } catch (e) {
+            console.error("Admin Archive Render Error:", e);
+            container.innerHTML = `<p class="text-xs text-error">Could not fully populate admin archive view. Check browser console for security restrictions.</p>`;
+        }
+    }
+
+    function setupStudentListeners() {
+        const btnSub = document.getElementById('btnSubmitReport');
+        if (!btnSub) return;
+        
+        const newBtnSub = btnSub.cloneNode(true);
+        btnSub.replaceWith(newBtnSub);
+
+        newBtnSub.addEventListener('click', async () => {
+            const hostFamily = document.getElementById('repHostFamily').value;
+            const hostSiblings = document.getElementById('repHostSiblings').value;
+            const happiness = document.getElementById('repHappiness').value;
+
+            const school = document.getElementById('repSchool').value.trim();
+            const activities = document.getElementById('repActivities').value.trim();
+            const friends = document.getElementById('repFriends').value.trim();
+            const concerns = document.getElementById('repConcerns').value.trim();
+
+            if (!school || !activities || !friends || !concerns) {
+                alert("Please fill out all technical text fields before submitting your report.");
+                return;
+            }
+
+            const structuredReportText = `**Relationship to host family:**\n${hostFamily}\n\n**Relationship to host siblings:**\n${hostSiblings}\n\n**Overall happiness status:**\n${happiness}\n\n**School work:**\n${school}\n\n**After school activities:**\n${activities}\n\n**Friends:**\n${friends}\n\n**Concerns:**\n${concerns}`;
+
+            const reportId = `rep_${activeMonth}_${activeYear}_${currentUser.uid}`;
+            const repRef = doc(db, "reports", reportId);
+
+            try {
+                // Wir speichern ALLE Felder ab, damit das Dokument für Queries lesbar bleibt!
+                await setDoc(repRef, {
+                    studentId: currentUser.uid,
+                    schuelerName: localStorage.getItem('userName') || currentUser.displayName || "Student", 
+                    monat: activeMonth,
+                    jahr: activeYear,
+                    report: structuredReportText,
+                    abgegeben: true,
+                    timestamp: Date.now()
+                }, { merge: true }); 
+
+                alert("Your structured report has been compiled and submitted successfully!");
+                window.location.reload();
+            } catch (error) {
+                console.error("Error updating structured report document:", error);
+                alert("Failed to submit report. Please check active window constraints.");
+            }
+        });
+    }
+
+    async function checkStudentSubmissionStatus() {
+        const reportId = `rep_${activeMonth}_${activeYear}_${currentUser.uid}`;
+        const repSnap = await getDoc(doc(db, "reports", reportId));
+        const panel = document.getElementById('studentSubmissionPanel');
+
+        if (repSnap.exists() && repSnap.data().abgegeben === true && panel) {
+            const activeTrans = JSON.parse(localStorage.getItem('cachedUiTexts')) || uiMaster;
+            
+            const titleText = activeTrans.success_submitted_title || "Report Already Submitted";
+            const descText = activeTrans.success_submitted_desc || "You have successfully locked and dispatched your master copy for";
+
+            panel.className = "bg-green-50 border border-green-200 rounded-xl p-6 shadow-sm text-center space-y-2";
+            panel.innerHTML = `
+                <span class="material-symbols-outlined text-green-600 text-4xl">task_alt</span>
+                <h2 class="font-headline-md text-lg font-bold text-green-900">${titleText}</h2>
+                <p class="text-sm text-green-800">${descText} ${activeMonth} ${activeYear}.</p>
+            `;
+        }
+    }
+
+    async function renderStudentPersonalHistory() {
+        const container = document.getElementById('historyContainer');
+        if (!container) return;
+        container.innerHTML = "";
+
+        try {
+            // Einfache, saubere Query ohne zusätzliche Ketten
+            const reportsRef = collection(db, "reports");
+            const q = query(reportsRef, where("studentId", "==", currentUser.uid));
+            const snap = await getDocs(q);
+            
+            // Filterung und Sortierung passieren sicher im Frontend
+            const abgegebene = snap.docs
+                .map(d => d.data())
+                .filter(data => data.abgegeben === true)
+                .sort((a, b) => b.timestamp - a.timestamp);
+
+            if (abgegebene.length === 0) {
+                container.innerHTML = `<p class="text-sm text-on-surface-variant/70 italic text-center py-8">You haven't submitted any monthly reports yet.</p>`;
+                return;
+            }
+
+            abgegebene.forEach(data => {
+                const card = document.createElement('div');
+                card.className = "bg-white border border-outline-variant/60 rounded-xl p-4 md:p-5 shadow-sm space-y-3";
+                card.innerHTML = `
+                    <div class="flex justify-between items-center border-b border-outline-variant/40 pb-2">
+                        <span class="font-bold text-primary text-sm">${data.monat} ${data.jahr}</span>
+                        <span class="text-[10px] md:text-xs text-green-700 bg-green-50 px-2 py-0.5 rounded border border-green-200 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">done</span> Archived
+                        </span>
+                    </div>
+                    <div class="text-sm text-on-surface-variant leading-relaxed whitespace-pre-wrap break-words">${linkify(data.report)}</div>
+                `;
+                container.appendChild(card);
+            });
+        } catch (e) {
+            console.error("History Render Error:", e);
+            container.innerHTML = `<p class="text-xs text-on-surface-variant/70 italic">Your historical files will display here dynamically once created.</p>`;
+        }
+    }
+
+    async function loadPageTranslationsPipeline() {
+        // KORREKTUR: Try-Catch fängt API-Fehler der Übersetzungs-Pipeline ab
+        try {
+            const uiTranslations = await getStaticUITranslations(currentLang);
+            applyStaticTranslations(uiTranslations);
+        } catch (e) {
+            console.error("Error loading translations from database:", e);
+            applyStaticTranslations(uiMaster); // Lokale Fallbacks anwenden
+        }
+    }
+
+    async function callTranslationAPI(text, targetLang) {
+        try {
+            const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang.toLowerCase()}`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("API Connection Failed");
+            
+            const data = await response.json();
+            if (data.responseData && data.responseData.translatedText) {
+                return data.responseData.translatedText;
+            }
+        } catch (err) {
+            console.error("Translation API Request Failure:", err.message);
+        }
+        return "__FAILED__"; 
+    }
+
+    async function getStaticUITranslations(lang) {
+        if (lang === 'en') {
+            localStorage.setItem('cachedUiTexts', JSON.stringify(uiMaster));
+            return uiMaster;
+        }
+
+        const docRef = doc(db, "app_content", "report_texts");
+        let existingData = {};
+        
+        try {
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) existingData = docSnap.data();
+        } catch (e) { console.warn("Could not fetch reports UI translations context:", e.message); }
+
+        let missingKeys = Object.keys(uiMaster).filter(key => !existingData[key] || !existingData[key][lang]);
+
+        if (missingKeys.length === 0) {
+            let flattened = {};
+            Object.keys(uiMaster).forEach(key => { flattened[key] = existingData[key][lang]; });
+            localStorage.setItem('cachedUiTexts', JSON.stringify(flattened));
+            return flattened;
+        }
+
+        let tempTranslations = { ...existingData };
+        let hasNew = false;
+
+        for (let key of missingKeys) {
+            const translatedText = await callTranslationAPI(uiMaster[key], lang);
+            if (translatedText !== "__FAILED__") {
+                if (!tempTranslations[key]) tempTranslations[key] = {};
+                tempTranslations[key][lang] = translatedText;
+                tempTranslations[key]['en'] = uiMaster[key];
+                hasNew = true;
+            }
+        }
+
+        if (hasNew) {
+            try { await setDoc(docRef, tempTranslations, { merge: true }); } catch (de) { console.error("Error tracking runtime update", de); }
+        }
+
+        let flattened = {};
+        Object.keys(uiMaster).forEach(key => { flattened[key] = tempTranslations[key]?.[lang] || uiMaster[key]; });
+        localStorage.setItem('cachedUiTexts', JSON.stringify(flattened));
+        return flattened;
+    }
+
+    function applyStaticTranslations(data) {
+        document.querySelectorAll('[data-translate]').forEach(el => {
+            const key = el.getAttribute('data-translate');
+            if (data[key]) el.innerText = data[key];
+        });
+
+        document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-translate-placeholder');
+            if (data[key]) el.setAttribute('placeholder', data[key]);
+        });
+    }
+
+    function linkify(text) {
+        if (!text) return "";
+        
+        let boldFormattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-primary">$1</strong>');
+        const urlPattern = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]|\bwww\.[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        
+        return boldFormattedText.replace(urlPattern, (url) => {
+            let href = url;
+            if (!/^https?:\/\//i.test(url)) {
+                href = 'https://' + url;
+            }
+            return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline font-semibold transition-all break-all">${url}</a>`;
+        });
+    }
+</script>
+</body>
+</html>

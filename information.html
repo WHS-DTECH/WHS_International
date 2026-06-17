@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Informations | International Student App</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+          tailwind.config = {
+            darkMode: "class",
+            theme: {
+              extend: {
+                "colors": {
+                    "primary": "#003527", 
+                    "primary-container": "#064e3b", 
+                    "on-surface": "#191c1e",
+                    "on-surface-variant": "#404944", 
+                    "outline-variant": "#bfc9c3",
+                    "error": "#ba1a1a"
+                },
+                "fontFamily": { 
+                    "body-md": ["Inter"], 
+                    "headline-md": ["Montserrat"] 
+                }
+              }
+            }
+          }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { display: none; }
+        html { scroll-behavior: smooth; }
+        /* Verhindert horizontales Wackeln auf Smartphones */
+        body { overflow-x: hidden; }
+        /* Sanftes Scrollen für das mobile Inhaltsverzeichnis */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-[#f7f9fb] text-on-surface font-body-md min-h-screen flex flex-col">
+
+<header class="w-full flex flex-wrap justify-between items-center px-4 md:px-16 py-4 bg-white border-b border-outline-variant gap-4">
+    <div class="flex items-center gap-4">
+        <span class="font-headline-md text-lg md:text-xl font-bold text-primary whitespace-nowrap">International Students App</span>
+    </div>
+    
+    <div class="flex items-center gap-3 md:gap-6 ml-auto">
+        <a href="index.html" class="text-xs md:text-sm font-medium text-on-surface-variant hover:text-primary flex items-center gap-1 transition-colors">
+            <span class="material-symbols-outlined text-base">arrow_back</span>
+            <span data-translate="back_to_dashboard" class="hidden sm:inline">Back to Dashboard</span>
+        </a>
+        <div id="currentLanguageLabel" class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-on-surface-variant bg-slate-100 border border-slate-200 px-2 py-0.5 md:px-2.5 md:py-1 rounded-lg cursor-pointer hover:bg-slate-200 hover:text-primary transition-all">
+            --
+        </div>
+        <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary text-xl md:text-2xl">account_circle</span>
+    </div>
+</header>
+
+<main class="flex-1 max-w-5xl w-full mx-auto px-4 md:px-6 pt-6 md:pt-12 flex flex-col lg:flex-row gap-6 md:gap-8 mb-12">
+    
+    <div class="w-full lg:w-1/4">
+        <div class="bg-white border border-outline-variant/60 rounded-xl p-4 md:p-5 shadow-sm lg:sticky lg:top-6">
+            <h2 class="font-headline-md text-xs font-bold text-primary uppercase tracking-wider mb-2 lg:mb-4" data-translate="nav_title">Overview</h2>
+            <nav id="tableOfContents" class="flex flex-row lg:flex-col gap-2 text-xs md:text-sm text-on-surface-variant overflow-x-auto lg:overflow-x-visible no-scrollbar whitespace-nowrap lg:whitespace-normal pb-2 lg:pb-0">
+                </nav>
+        </div>
+    </div>
+
+    <div class="w-full lg:w-3/4 space-y-6">
+        <div class="flex justify-between items-center border-b border-outline-variant pb-4 gap-4">
+            <h1 class="font-headline-md text-2xl md:text-3xl font-bold text-primary leading-tight" data-translate="page_title">Informations:</h1>
+            <button id="addParagraphBtn" class="hidden bg-primary hover:bg-primary-container text-white px-3 py-2 md:px-4 md:py-2 rounded-lg text-xs md:text-sm font-medium flex items-center gap-1.5 transition-colors shadow-sm whitespace-nowrap">
+                <span class="material-symbols-outlined text-sm md:text-base">add</span>
+                <span data-translate="btn_add">Add Section</span>
+            </button>
+        </div>
+
+        <div id="paragraphsContainer" class="space-y-6">
+            </div>
+    </div>
+</main>
+
+<div id="editorModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-2xl sm:rounded-xl border-t sm:border border-outline-variant max-w-lg w-full p-6 shadow-xl space-y-4 max-h-[90vh] sm:max-h-[none] overflow-y-auto animate-in slide-in-from-bottom-4 sm:slide-in-from-bottom-0 duration-200">
+        <h2 id="modalTitle" class="font-headline-md text-xl font-bold text-primary" data-translate="modal_add_title">Add New Section</h2>
+        
+        <div class="space-y-3">
+            <div>
+                <label class="block text-xs font-semibold text-on-surface-variant uppercase mb-1" data-translate="label_heading">Section Title</label>
+                <input type="text" id="inputTitle" class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-sm" data-translate-placeholder="placeholder_heading" placeholder="Write a title for this section here...">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-on-surface-variant uppercase mb-1" data-translate="label_content">Content</label>
+                <textarea id="inputText" rows="5" class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-sm" data-translate-placeholder="placeholder_content" placeholder="Write your information text here..."></textarea>
+            </div>
+        </div>
+
+        <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2">
+            <button id="closeModalBtn" class="w-full sm:w-auto px-4 py-2.5 sm:py-2 text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors border border-gray-200 sm:border-none rounded-lg sm:rounded-none" data-translate="btn_cancel">Cancel</button>
+            <button id="saveParagraphBtn" class="w-full sm:w-auto bg-primary hover:bg-primary-container text-white px-4 py-2.5 sm:py-2 rounded-lg text-sm font-medium transition-colors" data-translate="btn_save">Save Section</button>
+        </div>
+    </div>
+</div>
+
+<footer class="w-full py-6 text-center text-xs text-on-surface-variant/70 space-y-1 mt-auto border-t border-gray-100 bg-white lg:bg-transparent">
+    <p>© 2026 Westland High School</p>
+    <p>Hokitika, New Zealand</p>
+</footer>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    
+    const firebaseConfig = {
+        apiKey: "AIzaSyCT10o03Puc_hz3TH7wTSsv1djexO5BBEY",
+        authDomain: "internationalstudentapp-b9b30.firebaseapp.com",
+        databaseURL: "https://internationalstudentapp-b9b30-default-rtdb.firebaseio.com",
+        projectId: "internationalstudentapp-b9b30",
+        storageBucket: "internationalstudentapp-b9b30.firebasestorage.app",
+        messagingSenderId: "202468323325",
+        appId: "1:202468323325:web:44f0b5a41c8b5d35083394",
+        measurementId: "G-HXXH6FJ8EX"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // KORREKTUR: Nutze überall 'userLanguage' wie in der Map-Datei
+    let currentLang = localStorage.getItem('userLanguage') || 'en';
+    let userRole = localStorage.getItem('userRole') || 'student';
+    let isAdmin = (userRole === 'admin');
+
+    const uiMaster = {
+        back_to_dashboard: "Back to Dashboard",
+        page_title: "Informations:",
+        nav_title: "Overview",
+        btn_add: "Add Section",
+        modal_add_title: "Add New Section",
+        modal_edit_title: "Edit Section",
+        label_heading: "Section Title",
+        label_content: "Content",
+        placeholder_heading: "Write a title for this section here...",
+        placeholder_content: "Write your information text here...",
+        btn_cancel: "Cancel",
+        btn_save: "Save Section",
+        no_content: "No information added.",
+        confirm_delete: "Are you sure you want to delete this section?",
+        alert_missing: "Please fill out both heading and content fields."
+    };
+
+    let paragraphsData = []; 
+    let currentEditId = null; 
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            const langBadge = document.getElementById('currentLanguageLabel');
+            if (langBadge) {
+                langBadge.innerText = currentLang.toUpperCase();
+            }
+
+            setupUI();
+            loadPageContent();
+        } else {
+            window.location.href = 'login.html';
+        }
+    });
+
+    function setupUI() {
+        if (isAdmin) {
+            const addBtn = document.getElementById('addParagraphBtn');
+            if (addBtn) addBtn.classList.remove('hidden');
+            setupAdminEventListeners();
+        }
+    }
+
+    async function loadPageContent() {
+        try {
+            const uiTranslations = await getStaticUITranslations(currentLang);
+            applyStaticTranslations(uiTranslations);
+
+            const docRef = doc(db, "app_content", "information_page");
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists() && docSnap.data().paragraphs) {
+                paragraphsData = docSnap.data().paragraphs;
+            } else {
+                paragraphsData = [];
+            }
+
+            await verifyAndGenerateContentTranslations();
+            renderContent(uiTranslations);
+        } catch (e) {
+            console.error("Critical error loading content:", e);
+        } finally {
+            // SICHERHEITSNETZ: Egal was passiert, die Seite MUSS sichtbar werden
+            document.body.style.display = 'flex';
+        }
+    }
+
+    async function verifyAndGenerateContentTranslations() {
+        if (currentLang === 'en') return; 
+
+        let triggerDbUpdate = false;
+
+        try {
+            for (let p of paragraphsData) {
+                if (!p.translations) p.translations = {};
+                
+                if (!p.translations[currentLang] || !p.translations[currentLang].title) {
+                    console.log(`Translating content to '${currentLang}'...`);
+                    const transTitle = await callTranslationAPI(p.title, currentLang);
+                    const transText = await callTranslationAPI(p.text, currentLang);
+                    
+                    if (transTitle !== "__FAILED__" && transText !== "__FAILED__") {
+                        p.translations[currentLang] = { title: transTitle, text: transText };
+                        triggerDbUpdate = true;
+                    }
+                }
+            }
+
+            if (triggerDbUpdate) {
+                const docRef = doc(db, "app_content", "information_page");
+                await setDoc(docRef, { paragraphs: paragraphsData }, { merge: true });
+            }
+        } catch (e) {
+            console.error("Error in content translation dynamic pipeline:", e);
+        }
+    }
+
+    function renderContent(uiTranslations) {
+        const tocContainer = document.getElementById('tableOfContents');
+        const contentContainer = document.getElementById('paragraphsContainer');
+        
+        if (!tocContainer || !contentContainer) return;
+        
+        tocContainer.innerHTML = '';
+        contentContainer.innerHTML = '';
+
+        if (paragraphsData.length === 0) {
+            const fallbackText = uiTranslations["no_content"] || uiMaster.no_content;
+            contentContainer.innerHTML = `<p class="text-sm text-on-surface-variant/70 italic text-center py-12">${fallbackText}</p>`;
+            return;
+        }
+
+        paragraphsData.forEach((p, index) => {
+            const sectionId = `section-${p.id}`;
+            const displayTitle = (currentLang === 'en') ? p.title : (p.translations?.[currentLang]?.title || p.title);
+            const displayText = (currentLang === 'en') ? p.text : (p.translations?.[currentLang]?.text || p.text);
+
+            const tocLink = document.createElement('a');
+            tocLink.href = `#${sectionId}`;
+            tocLink.className = "hover:text-primary transition-colors py-1.5 px-3 lg:px-2 block truncate font-medium border-l-2 border-transparent lg:hover:border-primary lg:pl-2 bg-slate-50 lg:bg-transparent rounded-lg lg:rounded-none border border-outline-variant/30 lg:border-none";
+            tocLink.innerText = displayTitle;
+            tocContainer.appendChild(tocLink);
+
+            const card = document.createElement('div');
+            card.id = sectionId;
+            card.className = "bg-white border border-outline-variant/60 rounded-xl p-4 md:p-8 shadow-sm relative group transition-all";
+            
+            let adminControlsHtml = '';
+            if (isAdmin) {
+                adminControlsHtml = `
+                    <div class="absolute top-3 right-3 flex flex-wrap items-center gap-1 bg-gray-50 p-1 rounded-lg border border-outline-variant/40 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity z-20">
+                        <button onclick="window.moveParagraph(${index}, -1)" class="p-1 hover:text-primary transition-colors text-gray-500 flex items-center" ${index === 0 ? 'disabled style="opacity:0.3;"' : ''}>
+                            <span class="material-symbols-outlined text-base md:text-lg">arrow_upward</span>
+                        </button>
+                        <button onclick="window.moveParagraph(${index}, 1)" class="p-1 hover:text-primary transition-colors text-gray-500 flex items-center" ${index === paragraphsData.length - 1 ? 'disabled style="opacity:0.3;"' : ''}>
+                            <span class="material-symbols-outlined text-base md:text-lg">arrow_downward</span>
+                        </button>
+                        <div class="w-px h-4 bg-outline-variant mx-0.5"></div>
+                        <button onclick="window.openEditModal('${p.id}')" class="p-1 hover:text-blue-600 transition-colors text-gray-500 flex items-center">
+                            <span class="material-symbols-outlined text-base md:text-lg">edit</span>
+                        </button>
+                        <button onclick="window.deleteParagraph('${p.id}')" class="p-1 hover:text-error transition-colors text-gray-500 flex items-center">
+                            <span class="material-symbols-outlined text-base md:text-lg">delete</span>
+                        </button>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                ${adminControlsHtml}
+                <div class="space-y-3 md:space-y-4 max-w-3xl">
+                    <h2 class="font-headline-md text-lg md:text-xl font-bold text-primary ${isAdmin ? 'pr-28' : ''}">${displayTitle}</h2>
+                    <p class="text-xs md:text-sm text-on-surface-variant leading-relaxed whitespace-pre-wrap">${linkify(displayText)}</p>
+                </div>
+            `;
+            contentContainer.appendChild(card);
+        });
+    }
+
+    function setupAdminEventListeners() {
+        const modal = document.getElementById('editorModal');
+        if (!modal) return;
+        
+        document.getElementById('addParagraphBtn').addEventListener('click', () => {
+            currentEditId = null;
+            const cachedUi = JSON.parse(localStorage.getItem('cachedUiTexts') || '{}');
+            document.getElementById('modalTitle').innerText = cachedUi['modal_add_title'] || uiMaster.modal_add_title;
+            
+            document.getElementById('inputTitle').value = '';
+            document.getElementById('inputText').value = '';
+            modal.classList.remove('hidden');
+        });
+
+        document.getElementById('closeModalBtn').addEventListener('click', () => { modal.classList.add('hidden'); });
+
+        document.getElementById('saveParagraphBtn').addEventListener('click', async () => {
+            const title = document.getElementById('inputTitle').value.trim();
+            const text = document.getElementById('inputText').value.trim();
+            const cachedUi = JSON.parse(localStorage.getItem('cachedUiTexts') || '{}');
+
+            if (!title || !text) {
+                alert(cachedUi['alert_missing'] || uiMaster.alert_missing);
+                return;
+            }
+
+            if (currentEditId) {
+                const index = paragraphsData.findIndex(p => p.id === currentEditId);
+                if (index !== -1) {
+                    paragraphsData[index].title = title;
+                    paragraphsData[index].text = text;
+                    paragraphsData[index].translations = {}; 
+                }
+            } else {
+                paragraphsData.push({
+                    id: 'p_' + Math.random().toString(36).substring(2, 11),
+                    title: title,
+                    text: text,
+                    translations: {}
+                });
+            }
+
+            await saveToFirestore();
+            modal.classList.add('hidden');
+            await loadPageContent();
+        });
+    }
+
+    window.openEditModal = function(id) {
+        currentEditId = id;
+        const target = paragraphsData.find(p => p.id === id);
+        if (!target) return;
+
+        const cachedUi = JSON.parse(localStorage.getItem('cachedUiTexts') || '{}');
+        document.getElementById('modalTitle').innerText = cachedUi['modal_edit_title'] || uiMaster.modal_edit_title;
+        document.getElementById('inputTitle').value = target.title;
+        document.getElementById('inputText').value = target.text;
+        document.getElementById('editorModal').classList.remove('hidden');
+    };
+
+    window.deleteParagraph = async function(id) {
+        const cachedUi = JSON.parse(localStorage.getItem('cachedUiTexts') || '{}');
+        if (!confirm(cachedUi['confirm_delete'] || uiMaster.confirm_delete)) return;
+        
+        paragraphsData = paragraphsData.filter(p => p.id !== id);
+        await saveToFirestore();
+        await loadPageContent();
+    };
+
+    window.moveParagraph = async function(index, direction) {
+        const targetIndex = index + direction;
+        if (targetIndex < 0 || targetIndex >= paragraphsData.length) return;
+        
+        const temp = paragraphsData[index];
+        paragraphsData[index] = paragraphsData[targetIndex];
+        paragraphsData[targetIndex] = temp;
+
+        await saveToFirestore();
+        const cachedUi = JSON.parse(localStorage.getItem('cachedUiTexts') || '{}');
+        renderContent(cachedUi);
+    };
+
+    async function saveToFirestore() {
+        const docRef = doc(db, "app_content", "information_page");
+        try {
+            await setDoc(docRef, { paragraphs: paragraphsData });
+        } catch (e) {
+            console.error("Firestore-Error while saving:", e.message);
+        }
+    }
+
+    async function callTranslationAPI(text, targetLang) {
+        try {
+            const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang.toLowerCase()}`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("API-Error");
+
+            const data = await response.json();
+            if (data.responseData && data.responseData.translatedText) {
+                return data.responseData.translatedText;
+            }
+        } catch (err) {
+            console.error("Translation-API Error:", err.message);
+        }
+        return "__FAILED__"; 
+    }
+
+    async function getStaticUITranslations(lang) {
+        if (lang === 'en') {
+            localStorage.setItem('cachedUiTexts', JSON.stringify(uiMaster));
+            return uiMaster;
+        }
+
+        const docRef = doc(db, "app_content", "information_ui_texts");
+        
+        try {
+            const docSnap = await getDoc(docRef);
+            let existingData = docSnap.exists() ? docSnap.data() : {};
+
+            let missingKeys = [];
+            Object.keys(uiMaster).forEach(key => {
+                if (!existingData[key] || !existingData[key][lang]) {
+                    missingKeys.push(key);
+                }
+            });
+
+            if (missingKeys.length === 0) {
+                let flattened = {};
+                Object.keys(uiMaster).forEach(key => {
+                    flattened[key] = existingData[key][lang];
+                });
+                localStorage.setItem('cachedUiTexts', JSON.stringify(flattened));
+                return flattened;
+            }
+
+            console.log(`UI Translations for '${lang}' are missing. Generating via API...`);
+            
+            let tempTranslations = { ...existingData };
+            let hasNew = false;
+
+            for (let key of missingKeys) {
+                const translatedText = await callTranslationAPI(uiMaster[key], lang);
+                if (translatedText !== "__FAILED__") {
+                    if (!tempTranslations[key]) tempTranslations[key] = {};
+                    tempTranslations[key][lang] = translatedText;
+                    tempTranslations[key]['en'] = uiMaster[key];
+                    hasNew = true;
+                }
+            }
+
+            if (hasNew) {
+                await setDoc(docRef, tempTranslations, { merge: true });
+            }
+
+            let flattened = {};
+            Object.keys(uiMaster).forEach(key => {
+                flattened[key] = tempTranslations[key]?.[lang] || uiMaster[key];
+            });
+            localStorage.setItem('cachedUiTexts', JSON.stringify(flattened));
+            return flattened;
+
+        } catch (e) {
+            console.error("Error in UI translation pipeline, using fallback English:", e.message);
+            localStorage.setItem('cachedUiTexts', JSON.stringify(uiMaster));
+            return uiMaster;
+        }
+    }
+
+    function applyStaticTranslations(data) {
+        document.querySelectorAll('[data-translate]').forEach(el => {
+            const key = el.getAttribute('data-translate');
+            if (data[key]) el.innerText = data[key];
+        });
+
+        document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-translate-placeholder');
+            if (data[key]) el.setAttribute('placeholder', data[key]);
+        });
+    }
+
+    function linkify(text) {
+        if (!text) return "";
+        const urlPattern = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]|\bwww\.[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        
+        return text.replace(urlPattern, (url) => {
+            let href = url;
+            if (!/^https?:\/\//i.test(url)) {
+                href = 'https://' + url;
+            }
+            return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline font-semibold transition-all break-all">${url}</a>`;
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Map | International Student App</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+          tailwind.config = {
+            darkMode: "class",
+            theme: {
+              extend: {
+                "colors": {
+                        "primary": "#003527", 
+                        "primary-container": "#064e3b", 
+                        "on-surface": "#191c1e",
+                        "on-surface-variant": "#404944", 
+                        "outline-variant": "#bfc9c3",
+                        "error": "#ba1a1a"
+                },
+                "fontFamily": { 
+                    "body-md": ["Inter"], 
+                    "headline-md": ["Montserrat"] 
+                }
+              }
+            }
+          }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { display: none; }
+        html { scroll-behavior: smooth; }
+        
+        /* Verhindert Glitche beim Scrollen auf Mobilgeräten */
+        .map-container {
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+</head>
+<body class="bg-[#f7f9fb] text-on-surface font-body-md min-h-screen flex flex-col antialiased">
+
+<header class="w-full flex justify-between items-center px-4 md:px-16 py-4 bg-white border-b border-outline-variant">
+    <div class="flex items-center gap-4">
+        <span class="font-headline-md text-base md:text-xl font-bold text-primary tracking-tight whitespace-nowrap">International Student App</span>
+    </div>
+    
+    <div class="flex items-center gap-3 md:gap-6">
+        <a href="index.html" class="text-xs md:text-sm font-medium text-on-surface-variant hover:text-primary flex items-center gap-1 transition-colors min-h-[44px]">
+            <span class="material-symbols-outlined text-base md:text-lg">arrow_back</span>
+            <span data-translate="back_to_dashboard" class="hidden sm:inline">Back to Dashboard</span>
+        </a>
+        <div id="currentLanguageLabel" class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-on-surface-variant bg-slate-100 border border-slate-200 px-2 md:px-2.5 py-1 rounded-lg cursor-pointer hover:bg-slate-200 hover:text-primary transition-all min-h-[32px] flex items-center">
+            --
+        </div>
+        <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary p-1 min-h-[44px] flex items-center text-xl md:text-2xl">account_circle</span>
+    </div>
+</header>
+
+<main class="flex-1 max-w-5xl w-full mx-auto px-4 md:px-6 py-6 md:py-12 flex flex-col items-center justify-center">
+    
+    <div class="mb-6 md:mb-8 text-center px-2">
+        <h1 class="font-headline-md text-2xl md:text-3xl font-bold text-primary mb-1 md:mb-2" data-translate="page_title">School Map</h1>
+        <p class="text-xs md:text-sm text-on-surface-variant" data-translate="page_subtitle">Find your way around the school grounds.</p>
+    </div>
+
+    <div class="bg-white border border-outline-variant/60 rounded-xl shadow-sm w-full relative flex items-center justify-center h-[60vh] overflow-hidden">
+        
+        <div class="absolute bottom-4 right-4 flex flex-col gap-2 z-30">
+            <button id="zoomInBtn" class="bg-white/90 backdrop-blur-sm text-primary border border-outline-variant shadow-md w-11 h-11 rounded-lg flex items-center justify-center font-bold text-xl active:bg-slate-100 min-h-[44px] select-none">
+                <span class="material-symbols-outlined">add</span>
+            </button>
+            <button id="zoomOutBtn" class="bg-white/90 backdrop-blur-sm text-primary border border-outline-variant shadow-md w-11 h-11 rounded-lg flex items-center justify-center font-bold text-xl active:bg-slate-100 min-h-[44px] select-none">
+                <span class="material-symbols-outlined">remove</span>
+            </button>
+        </div>
+
+        <div id="mapScrollContainer" class="map-container w-full h-full overflow-auto p-4 flex items-center justify-center">
+            <img id="schoolMap" class="max-w-full h-auto rounded-lg object-contain max-h-full transition-all duration-200 ease-out" src="map.jpg" alt="Westland High School Map">
+        </div>
+        
+    </div>
+
+</main>
+
+<footer class="w-full py-6 md:py-8 text-center text-[11px] text-on-surface-variant/70 space-y-1 mt-auto border-t border-gray-100">
+    <p class="font-semibold">© 2026 International Student App</p>
+    <p>Hokitika, New Zealand</p>
+</footer>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCT10o03Puc_hz3TH7wTSsv1djexO5BBEY",
+        authDomain: "internationalstudentapp-b9b30.firebaseapp.com",
+        databaseURL: "https://internationalstudentapp-b9b30-default-rtdb.firebaseio.com",
+        projectId: "internationalstudentapp-b9b30",
+        storageBucket: "internationalstudentapp-b9b30.firebasestorage.app",
+        messagingSenderId: "202468323325",
+        appId: "1:202468323325:web:44f0b5a41c8b5d35083394"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const userRole = localStorage.getItem('userRole');
+
+    const englishMaster = {
+        back_to_dashboard: 'Back to Dashboard',
+        page_title: 'School Map',
+        page_subtitle: 'Find your way around the school grounds.'
+    };
+
+    onAuthStateChanged(auth, (user) => {
+        if (!user || !userRole) {
+            window.location.href = 'login.html';
+        } else {
+            initMapPage();
+            setupZoomControls();
+        }
+    });
+
+    async function initMapPage() {
+        document.body.style.display = 'flex';
+        
+        const currentLang = localStorage.getItem('userLanguage') || 'en';
+        document.documentElement.lang = currentLang;
+
+        const langLabel = document.getElementById('currentLanguageLabel');
+        if (langLabel) langLabel.innerText = currentLang.toUpperCase();
+
+        const localizedTexts = await getTranslationData(currentLang);
+        applyTranslations(localizedTexts);
+    }
+
+    // --- Fehlerfreie Breiten-basierte Zoom Engine ---
+    function setupZoomControls() {
+        const container = document.getElementById('mapScrollContainer');
+        const map = document.getElementById('schoolMap');
+        const btnIn = document.getElementById('zoomInBtn');
+        const btnOut = document.getElementById('zoomOutBtn');
+
+        if (!container || !map || !btnIn || !btnOut) return;
+
+        let zoomLevel = 0; // 0 = Normalansicht, 1 = Zoom x1.5, 2 = Zoom x2.2, 3 = Zoom x3
+        const zoomWidths = ["100%", "150%", "220%", "300%"];
+        const zoomHeights = ["max-h-full", "max-h-[150%]", "max-h-[220%]", "max-h-[300%];"];
+
+        function applyZoom() {
+            // Layout-Klassen anpassen
+            if (zoomLevel === 0) {
+                container.classList.remove('items-start', 'justify-start');
+                container.classList.add('items-center', 'justify-center');
+                map.style.width = "100%";
+                map.className = "max-w-full h-auto rounded-lg object-contain max-h-full transition-all duration-200 ease-out";
+            } else {
+                // Wenn reingezoomt, Flex-Zentrierung aufheben, damit man sauber in die Ecken scrollen kann
+                container.classList.remove('items-center', 'justify-center');
+                container.classList.add('items-start', 'justify-start');
+                
+                map.style.width = zoomWidths[zoomLevel];
+                map.className = `max-w-none h-auto rounded-lg object-contain ${zoomHeights[zoomLevel]} transition-all duration-200 ease-out`;
+            }
+        }
+
+        btnIn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (zoomLevel < zoomWidths.length - 1) {
+                zoomLevel++;
+                applyZoom();
+            }
+        });
+
+        btnOut.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (zoomLevel > 0) {
+                zoomLevel--;
+                applyZoom();
+            }
+        });
+    }
+
+    // --- Firebase Translation Pipeline ---
+    async function getTranslationData(lang) {
+        if (lang.toLowerCase() === 'en') return englishMaster;
+
+        const docRef = doc(db, "app_content", "map_texts");
+        
+        try {
+            const docSnap = await getDoc(docRef);
+            let existingData = docSnap.exists() ? docSnap.data() : {};
+
+            let missingKeys = [];
+            Object.keys(englishMaster).forEach(key => {
+                if (!existingData[key] || !existingData[key][lang]) {
+                    missingKeys.push(key);
+                }
+            });
+
+            if (missingKeys.length === 0) {
+                let flattened = {};
+                Object.keys(englishMaster).forEach(key => {
+                    flattened[key] = existingData[key][lang];
+                });
+                return flattened;
+            }
+
+            console.log(`Translations for '${lang}' are missing in map_texts. Generating via API...`);
+            
+            for (let key of missingKeys) {
+                const translatedText = await callTranslationAPI(englishMaster[key], lang);
+                if (!existingData[key]) existingData[key] = {};
+                
+                existingData[key][lang] = translatedText;
+                existingData[key]['en'] = englishMaster[key];
+            }
+
+            await setDoc(docRef, existingData, { merge: true });
+
+            let flattened = {};
+            Object.keys(englishMaster).forEach(key => {
+                flattened[key] = existingData[key][lang];
+            });
+            return flattened;
+
+        } catch (e) {
+            console.error("Error loading/ translating data, using fallback English:", e);
+            return englishMaster;
+        }
+    }
+
+    async function callTranslationAPI(text, targetLang) {
+        try {
+            const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang.toLowerCase()}`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("Network Error");
+            
+            const data = await response.json();
+            if (data.responseData && data.responseData.translatedText) {
+                return data.responseData.translatedText;
+            }
+        } catch (err) {
+            console.error("Translation-API Error:", err.message);
+        }
+        return "__FAILED__"; 
+    }
+
+    function applyTranslations(data) {
+        document.querySelectorAll('[data-translate]').forEach(el => {
+            const key = el.getAttribute('data-translate');
+            if (data[key]) {
+                el.innerText = data[key];
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
